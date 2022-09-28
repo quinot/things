@@ -3,8 +3,8 @@
 part = "all"; // [bottom:Bottom only,lid:Lid only,all:Both bottom and lid]
 
 // in mm. Dimensions of space inside each compartment. Final outside box height & width depends on wall & lip thickness. Includes thickness of compartment separators.
-x_compartment_width = 81;
-y_width = 14;
+x_compartment_width = 81.5;
+y_width = 13;
 
 // # of compartments
 compartments = 2;
@@ -32,7 +32,7 @@ lip_thickness = 0.8;
 looseness_offset = 0.15;
 
 // Corner radius in mm (0 = sharp corner).
-radius = 5; 
+radius = 5;
 
 // [Hidden]
 
@@ -43,13 +43,9 @@ generate_box = (part == "bottom" || part == "all");
 generate_lid = (part == "lid" || part == "all");
 
 // resolution
-$fn=100; 
+$fn=100;
 
 x_width = compartments * x_compartment_width + (compartments - 1) * separator_thickness;
-
-echo ("Part", part);
-echo ("box", generate_box);
-echo ("lid", generate_lid);
 
 x_width_outside = x_width + thickness*2 + lip_thickness*2 + looseness_offset*2;
 y_width_outside = y_width + thickness*2 + lip_thickness*2 + looseness_offset*2;
@@ -67,9 +63,9 @@ box_height_total = bottom_height_outside + lip_height;
 lip_overlap_cut_total = bottom_height - lip_overlap_height;
 
 if (generate_box) {
-	translate([-((x_width_outside/2+2) * (generate_lid ? 1 : 0)), 0, 0]) difference() 
+	translate([-((x_width_outside/2+2) * (generate_lid ? 1 : 0)), 0, 0]) difference()
 	{
-		union() 
+		union()
 		{
             // Outer body
             translate([0,0,bottom_height_outside/4]) minkowski()
@@ -77,9 +73,9 @@ if (generate_box) {
                 cube([xadj,yadj,bottom_height_outside/2],center=true);
                 cylinder(r=corner_radius,h=bottom_height_outside/2);
             }
-          
+
             corner_lip = max(0.1, corner_radius - thickness - looseness_offset);
-            
+
             // Inner body that forms lip
 			translate([0,0,box_height_total/4]) minkowski()
 			{
@@ -92,29 +88,38 @@ if (generate_box) {
 		}
 
 		// Cut out inside
-		union() 
+		union()
 		{
             inside_lip_radius = max(0.1, corner_radius - thickness - lip_thickness - looseness_offset);
-            compartment_width = (x_width - (compartments - 1) * separator_thickness) / compartments;
-            for (c = [1 : compartments])
-                translate([(c - 1) * (compartment_width + separator_thickness) - (x_width - compartment_width) /2,0,(box_height_total)/4 + thickness]) minkowski()
+            total_inside_width = x_width_outside - thickness*2;
+            extra_inside_width = total_inside_width - x_width;
+            c_radius = max(0.1, corner_radius - thickness);
+
+            for (c = [1 : compartments]) {
+                cutout_x_translate = (c - 1) * (x_compartment_width + separator_thickness) - (x_width - x_compartment_width) / 2;
+
+                translate([cutout_x_translate, 0, (box_height_total)/4 + thickness]) minkowski()
                 {
-                 cube([compartment_width - inside_lip_radius*2, 
-                       y_width - inside_lip_radius*2, 
+                 cube([x_compartment_width - inside_lip_radius*2,
+                       y_width - inside_lip_radius*2,
                        (box_height_total)/2],
                        center=true);
                  cylinder(r=inside_lip_radius,h=box_height_total/2);
                 }
 
-            c_radius = max(0.1, corner_radius - thickness);
-			// cut out even more to make connector lip only go so deep
-			translate([0,0,((lip_overlap_cut_total)/4)  + thickness  ]) minkowski()
-			{
-			 cube([x_width_outside - thickness*2 - c_radius*2,y_width_outside - thickness*2 - c_radius*2, lip_overlap_cut_total/2],center=true);
-			 cylinder(r=c_radius,h=lip_overlap_cut_total/2);
-			}
-            
+                // cut out even more to make connector lip only go so deep
 
+                add_width = (c == 1 || c == compartments) ? extra_inside_width / 2 : 0;
+                offset = ((c == 1) ? -1 : 1) * add_width;
+                cutout_width = x_compartment_width + add_width;
+
+                translate([cutout_x_translate + offset, 0, ((lip_overlap_cut_total)/4)  + thickness  ]) minkowski()
+                {
+                 cube([cutout_width - c_radius*2, y_width_outside - thickness*2 - c_radius*2, lip_overlap_cut_total/2],center=true);
+                 cylinder(r=c_radius,h=lip_overlap_cut_total/2);
+                }
+
+            }
 		}
 	};
 }
@@ -122,7 +127,7 @@ if (generate_box) {
 // Generate the lid
 if (generate_lid) {
 	translate([(x_width_outside/2+1) * (generate_box ? 1 : 0), 0, lid_height_outside/4]) {
-		difference() 
+		difference()
 		{
 			// Body
 			minkowski()
@@ -130,7 +135,7 @@ if (generate_lid) {
 			 cube([xadj,yadj,lid_height_outside/2],center=true);
 			 cylinder(r=corner_radius,h=lid_height_outside/2);
 			}
-            
+
             corner_inner = max(0.1, corner_radius - thickness);
 			
             // Cut out inside
