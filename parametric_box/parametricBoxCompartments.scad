@@ -3,8 +3,8 @@
 part = "all"; // [bottom:Bottom only,lid:Lid only,all:Both bottom and lid]
 
 // in mm. Dimensions of space inside each compartment. Final outside box height & width depends on wall & lip thickness. Includes thickness of compartment separators.
-x_compartment_width = 81.5;
-y_width = 13;
+x_compartment_width = 14.5;
+y_width = 82;
 
 // # of compartments
 compartments = 2;
