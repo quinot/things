@@ -14,7 +14,7 @@ separator_thickness = 1.0;
 
 // The height of both the bottom and lid is the total height of the space inside the container.
 bottom_height = 50.0;
-lid_height = 31.0;
+lid_height = 32.0;
 
 // Wall thickness in mm. This adds to the outside dimensions of the box.
 thickness = 1.8;
