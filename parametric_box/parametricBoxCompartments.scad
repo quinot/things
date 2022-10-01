@@ -34,7 +34,7 @@ looseness_offset = 0.15;
 // Corner radius in mm (0 = sharp corner).
 radius = 5;
 
-// [Hidden]
+/* [Hidden] */
 
 // Generate the bottom.
 generate_box = (part == "bottom" || part == "all");
