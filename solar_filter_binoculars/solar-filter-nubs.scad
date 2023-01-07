@@ -48,7 +48,7 @@ module cover() {
                 cylinder(h = wall_thickness,
                          d = cover_outer_diameter,
                          center = true,
-                         $fn=200);  
+                         $fn=200);
             }
             translate([0 , 0, wall_thickness + cover_depth / 2]) {
                 difference() {
@@ -59,7 +59,7 @@ module cover() {
                     cylinder(h = cover_depth + 1,
                              d = cover_inner_diameter,
                              center = true,
-                             $fn = 200);                    
+                             $fn = 200);
                 }
             }
         }
@@ -75,8 +75,8 @@ module nub() {
                 translate([0, 0, _nub_cyl_height])
                     sphere(d = nub_dia, $fn=200);
             }
-        
-        
+
+
         translate([0, 0, holder_depth / 2 + wall_thickness])
             cylinder(h=holder_depth, d=_nub_clip_dia, center=true, $fn=200);
     }
@@ -120,14 +120,14 @@ module ring() {
         union() {
              translate([0, 0, wall_thickness / 2]) {
                 difference() {
-                    cylinder(h = wall_thickness, 
+                    cylinder(h = wall_thickness,
                              d = _ring_diameter,
                              center = true,
-                             $fn = 200);                    
-                    cylinder(h = wall_thickness + 1, 
+                             $fn = 200);
+                    cylinder(h = wall_thickness + 1,
                              d = diameter - ring_annulus_width * 2,
                              center = true,
-                             $fn = 200);                    
+                             $fn = 200);
                 }
             }
         }
@@ -145,7 +145,7 @@ if (part == "cover") {
     nub();
 } else if (part == "all") {
     spacing = cover_outer_diameter + part_spacing;
-    
+
     translate([-spacing * sqrt(3) / 4, spacing / 2, 0]) cover();
     translate([-spacing * sqrt(3) / 4, -spacing / 2, 0]) holder();
     translate([spacing * sqrt(3) / 4, 0, 0]) ring();
