@@ -1,27 +1,27 @@
 // outside diameter in mm
-outer_diameter=40;
+outer_diameter=39.5;
 
 // inner nut diameter
-inner_diameter=20;
+inner_diameter=20.5;
 
 // thickness of mesh walls
 wall_thickness = 0.4;
 
+// count of concentric walls
+concentric_walls=6;
+
 // count of radial walls
-radial_walls=6;
+radial_walls=36;
 
-// count of angular walls
-angular_walls=36;
-
-// height in mm
-height=0.8;
+// layer height in mm
+layer_height=0.2;
 
 /* [Hidden] */
 
-radial_wall_spacing=(outer_diameter/2 - inner_diameter/2 - radial_walls * wall_thickness) / (radial_walls - 1);
+concentric_wall_spacing=(outer_diameter/2 - inner_diameter/2 - concentric_walls * wall_thickness) / (concentric_walls - 1);
 
-module radial_wall(j) {
-    inner_radius = inner_diameter / 2 + j * (radial_wall_spacing + wall_thickness);
+module concentric_wall(j) {
+    inner_radius = inner_diameter / 2 + j * (concentric_wall_spacing + wall_thickness);
     outer_radius = inner_radius + wall_thickness;
 
     difference() {
@@ -30,8 +30,8 @@ module radial_wall(j) {
     }
 }
 
-module angular_wall(j) {
-  rotate([0, 0, 360 * j / angular_walls])
+module radial_wall(j) {
+  rotate([0, 0, 360 * j / radial_walls])
       intersection() {
         circle(d=outer_diameter, $fn=200);
         difference() {
@@ -49,8 +49,20 @@ module core() {
     }
 }
 
-linear_extrude(height=height) {
+// Inner and outer walls: full height (4 layers)
+linear_extrude(height=4*layer_height) {
     core();
-    for (j=[0:radial_walls-1]) radial_wall(j);
-    for (j=[0:angular_walls-1]) angular_wall(j);
+    concentric_wall(0);
+    concentric_wall(concentric_walls - 1);
 }
+
+// Radial walls: 1st and 4th layer
+for (z = [0, 3 * layer_height])
+    translate([0, 0, z])
+         linear_extrude(height=layer_height)
+              for (j=[0:radial_walls-1]) radial_wall(j);
+
+// Concentric walls: 2nd and 3rd layers
+color("blue") translate([0, 0, layer_height])
+    linear_extrude(height=2*layer_height)
+        for (j=[1:concentric_walls-2]) concentric_wall(j);
