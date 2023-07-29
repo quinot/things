@@ -5,6 +5,8 @@
 G90;
 M117 Bed leveling started;
 G28 ; Home all axis
+; Reset feed rate
+G1 F5000.0
 G04 P500;
 M117 Moving to point 1;
 G1 Z5 ; Lift Z axis
