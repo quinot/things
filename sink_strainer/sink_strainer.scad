@@ -2,16 +2,16 @@
 outer_diameter=39.5;
 
 // inner nut diameter
-inner_diameter=20.5;
+inner_diameter=20.6;
 
 // thickness of mesh walls
 wall_thickness = 0.4;
 
 // count of concentric walls
-concentric_walls=6;
+concentric_walls=5;
 
 // count of radial walls
-radial_walls=36;
+radial_walls=18;
 
 // layer height in mm
 layer_height=0.2;
