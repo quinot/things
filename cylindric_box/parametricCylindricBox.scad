@@ -62,7 +62,7 @@ if (generate_box) {
             cylinder(r=outer_diameter/2,h=bottom_height_outside);
 
             // Inner body that forms lip
-			cylinder(r=outer_diameter/2 - thickness*2 - 2*looseness_offset,h=box_height_total);
+			cylinder(r=inner_diameter/2 + lip_thickness,h=box_height_total);
 		}
 
 		// Cut out inside
@@ -70,9 +70,9 @@ if (generate_box) {
 		{
             main_cut_height = bottom_height - lip_overlap_height;
             translate([0, 0, thickness])
-                cylinder(r=inner_diameter/2, h=main_cut_height);
+                cylinder(r=outer_diameter/2 - thickness, h=main_cut_height);
             translate([0, 0, thickness + main_cut_height-0.1])
-                cylinder(r=inner_diameter/2 - 2 * lip_thickness - 2 * looseness_offset, h=lip_height + lip_overlap_height +.2);
+                cylinder(r=inner_diameter/2, h=lip_height + lip_overlap_height +.2);
 		}
 	};
 }
@@ -86,7 +86,7 @@ if (generate_lid) {
 			cylinder(r=outer_diameter/2, h=lid_height_outside);
 
 			translate([0,0,thickness])
-                cylinder(r=inner_diameter/2, h=lid_height_outside);
+                cylinder(r=outer_diameter/2 - thickness, h=lid_height_outside);
 		}
 	};
 }
