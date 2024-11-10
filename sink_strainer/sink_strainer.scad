@@ -5,7 +5,7 @@ outer_diameter=39.5;
 inner_diameter=20.6;
 
 // thickness of mesh walls
-wall_thickness = 0.4;
+wall_thickness = 0.8;
 
 // count of concentric walls
 concentric_walls=5;
@@ -14,7 +14,7 @@ concentric_walls=5;
 radial_walls=18;
 
 // layer height in mm
-layer_height=0.2;
+layer_height=0.4;
 
 /* [Hidden] */
 
